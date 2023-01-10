@@ -54,7 +54,7 @@ streamlit.write('The user entered ', fruit_choice)
 # write your own comment -what does the next line do? 
 # write your own comment - what does this do?
 
-streamlit.stop()
+#streamlit.stop()
 
 #import snowflake.connector
 
@@ -73,6 +73,15 @@ if streamlit.button('Get Fruit Load List'):
       streamlit.dataframe(my_data_rows)
 
 
-fruit_choice_2 = streamlit.text_input('What would you like to add?','jackfruit')
-streamlit.write('Thanks for adding ', fruit_choice_2)
-my_cur.execute("insert into fruit_load_list values ('from streamlit')")
+streamlit.write('Thanks for adding ', add_my_fruit)
+
+def insert_row_snowflake(new_fruit):
+      with my_cnx.cursos() as my_cur:
+            my_cur.execute("insert into fruit_load_list values ('from streamlit')")
+            return "Thanks for adding " + new_fruit
+      
+add_my_fruit = streamlit.text_input('What fruit would you like to add?')
+if streamlit.button('Get Fruit Load List'):
+      my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+      back_from_function = insert_row_snowflake(add_my_fruit)    
+      streamlit.text(back_from_function)
